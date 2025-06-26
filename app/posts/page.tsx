@@ -36,8 +36,6 @@ interface UserSession {
   role?: string;
 }
 
-type SupabasePost = Omit<Post, 'profiles'> & { profiles: any };
-
 export default function PostsLanding() {
   const [loading, setLoading] = useState(true);
   const [user, setUser] = useState<UserSession | null>(null);
