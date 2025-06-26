@@ -2,6 +2,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { supabase } from "../../../lib/supabaseClient";
+import Image from "next/image";
 
 export default function ForgotPassword() {
   const [email, setEmail] = useState("");
@@ -26,7 +27,7 @@ export default function ForgotPassword() {
       {/* Ornamen awan */}
       <div className="absolute top-0 left-0 w-32 h-32 bg-white opacity-40 rounded-full blur-2xl -z-10" style={{top: '-40px', left: '-40px'}} />
       <div className="absolute bottom-0 right-0 w-48 h-48 bg-blue-100 opacity-30 rounded-full blur-2xl -z-10" style={{bottom: '-60px', right: '-60px'}} />
-      <img src="/mountain.svg" alt="Gunung" width={70} height={70} className="mb-2 drop-shadow-lg animate-bounce-slow" />
+      <Image src="/mountain.svg" alt="Gunung" width={70} height={70} className="mb-2 drop-shadow-lg animate-bounce-slow" />
       <h2 className="text-3xl font-extrabold mb-2 text-blue-800 drop-shadow">Lupa Password</h2>
       <form onSubmit={handleSubmit} className="flex flex-col gap-4 w-full max-w-xs bg-white/80 rounded-xl shadow-lg p-6 mt-4">
         <input

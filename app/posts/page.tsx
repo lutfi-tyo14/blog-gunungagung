@@ -2,6 +2,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { supabase } from "../../lib/supabaseClient";
+import Image from "next/image";
 
 interface Post {
   id: string;
@@ -71,11 +72,11 @@ export default function PostsLanding() {
         .order("created_at", { ascending: false });
       setPosts((postsData || []).map((p: any) => ({ 
         ...p, 
-        profiles: p.profiles 
+        profiles: Array.isArray(p.profiles) ? p.profiles[0] : p.profiles 
       })));
       // Fetch comments for all posts
       if (postsData && postsData.length > 0) {
-        const postIds = postsData.map((p: Post) => p.id);
+        const postIds = postsData.map((p) => p.id);
         const { data: allComments } = await supabase
           .from("comments")
           .select("id, content, created_at, post_id, profiles:profiles(username,email,avatar_url)")
@@ -124,7 +125,10 @@ export default function PostsLanding() {
     } else {
       setCommentsMap((prev) => ({
         ...prev,
-        [postId]: [...(prev[postId] || []), data],
+        [postId]: [
+          ...(prev[postId] || []),
+          data ? { ...data, profiles: Array.isArray(data.profiles) ? data.profiles[0] : data.profiles } : data
+        ],
       }));
       setCommentInputs((prev) => ({ ...prev, [postId]: "" }));
     }
@@ -139,7 +143,7 @@ export default function PostsLanding() {
       <div className="absolute bottom-0 right-0 w-60 h-60 bg-blue-100 opacity-30 rounded-full blur-2xl -z-10" style={{bottom: '-80px', right: '-80px'}} />
       <div className="flex w-full justify-between items-center max-w-2xl mb-2">
         <h1 className="text-3xl font-extrabold text-blue-700 tracking-tight flex items-center gap-2">
-          <img src="/mountain.svg" alt="Gunung" width={36} height={36} className="inline-block drop-shadow animate-bounce-slow" />
+          <Image src="/mountain.svg" alt="Gunung" width={36} height={36} className="inline-block drop-shadow animate-bounce-slow" />
           Postingan Gunung Agung
         </h1>
         <button
@@ -156,13 +160,21 @@ export default function PostsLanding() {
             <h2 className="text-2xl font-bold text-blue-800 group-hover:underline mb-1">{post.title}</h2>
             <p className="text-base text-gray-700 mb-1 whitespace-pre-line">{post.content}</p>
             {post.image_url && (
-              <img src={post.image_url} alt={post.title} className="max-h-64 object-contain rounded-xl border border-blue-100 mb-2" />
+              <Image 
+                src={post.image_url} 
+                alt={post.title} 
+                width={800}
+                height={400}
+                className="max-h-64 object-contain rounded-xl border border-blue-100 mb-2" 
+              />
             )}
             <div className="text-xs text-gray-500 flex gap-2 items-center mb-2">
               <div className="flex items-center gap-2">
-                <img
+                <Image
                   src={post.profiles?.avatar_url || "/file.svg"}
                   alt="Avatar penulis"
+                  width={24}
+                  height={24}
                   className="w-6 h-6 rounded-full object-cover border border-blue-200"
                 />
                 <span>
@@ -212,9 +224,11 @@ export default function PostsLanding() {
               <div className="flex flex-col gap-3">
                 {(commentsMap[post.id] || []).map((c) => (
                   <div key={c.id} className="flex gap-3 items-start">
-                    <img
+                    <Image
                       src={c.profiles?.avatar_url || "/file.svg"}
                       alt="avatar"
+                      width={32}
+                      height={32}
                       className="w-8 h-8 rounded-full object-cover border-2 border-blue-200 bg-gray-100 mt-1"
                     />
                     <div className="flex-1 bg-blue-50 rounded-xl px-4 py-2 shadow-sm">

@@ -2,6 +2,7 @@
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { supabase } from "../../../lib/supabaseClient";
+import Image from "next/image";
 
 interface Post {
   id: string;
@@ -103,7 +104,13 @@ export default function PostDetail() {
           Oleh: {post.profiles?.username || post.profiles?.email || 'Anonim'} • {new Date(post.created_at).toLocaleString()}
         </div>
         {post.image_url && (
-          <img src={post.image_url} alt={post.title} className="max-h-80 object-contain rounded mb-4 mx-auto" />
+          <Image 
+            src={post.image_url} 
+            alt={post.title} 
+            width={800}
+            height={600}
+            className="max-h-80 object-contain rounded mb-4 mx-auto" 
+          />
         )}
         <p className="text-lg mb-4 whitespace-pre-line">{post.content}</p>
         <div className="border-t pt-4 mt-4">
@@ -112,10 +119,12 @@ export default function PostDetail() {
           <div className="flex flex-col gap-4">
             {comments.map((c) => (
               <div key={c.id} className="flex gap-3 items-start">
-                <img
+                <Image
                   src={c.profiles?.avatar_url || "/file.svg"}
                   alt="avatar"
-                  className="w-8 h-8 rounded-full object-cover border border-blue-200 bg-gray-100 mt-1"
+                  width={32}
+                  height={32}
+                  className="w-8 h-8 rounded-full object-cover border-2 border-blue-200 bg-gray-100 mt-1"
                 />
                 <div className="flex-1 bg-gray-50 rounded-lg px-3 py-2">
                   <div className="font-semibold text-blue-700 text-sm">{c.profiles?.username || c.profiles?.email || 'Anonim'}</div>

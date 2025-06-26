@@ -2,6 +2,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { supabase } from "../../lib/supabaseClient";
+import Image from "next/image";
 
 interface Profile {
   id: string;
@@ -97,7 +98,7 @@ export default function Dashboard() {
       <div className="absolute bottom-0 right-0 w-60 h-60 bg-blue-100 opacity-30 rounded-full blur-2xl -z-10" style={{bottom: '-80px', right: '-80px'}} />
       <div className="w-full max-w-3xl bg-white/90 rounded-xl shadow-lg p-8 flex flex-col gap-8">
         <h1 className="text-3xl font-bold text-blue-700 mb-2 flex items-center gap-2">
-          <img src="/mountain.svg" alt="Gunung" width={32} height={32} className="inline-block drop-shadow animate-bounce-slow" />
+          <Image src="/mountain.svg" alt="Gunung" width={32} height={32} className="inline-block drop-shadow animate-bounce-slow" />
           Dashboard ({profile.role.replace('_', ' ').toUpperCase()})
         </h1>
         {/* User & Admin */}

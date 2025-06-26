@@ -2,6 +2,7 @@
 import { useEffect, useState, ChangeEvent } from "react";
 import { useRouter } from "next/navigation";
 import { supabase } from "../../lib/supabaseClient";
+import Image from "next/image";
 
 export default function EditProfile() {
   const [loading, setLoading] = useState(true);
@@ -93,9 +94,11 @@ export default function EditProfile() {
         {/* Ringkasan Profile */}
         {!showEdit && (
           <>
-            <img
+            <Image
               src={avatarUrl || "/file.svg"}
               alt="Foto Profil"
+              width={112}
+              height={112}
               className="w-28 h-28 rounded-full object-cover border-4 border-blue-200 shadow mb-2"
             />
             <h2 className="text-2xl font-bold text-blue-700 mb-1">{username || user?.email}</h2>
@@ -123,9 +126,11 @@ export default function EditProfile() {
           <form onSubmit={handleSubmit} className="flex flex-col gap-6 w-full">
             <div className="flex flex-col items-center gap-2">
               <div className="relative">
-                <img
+                <Image
                   src={avatarUrl || "/file.svg"}
                   alt="Foto Profil"
+                  width={112}
+                  height={112}
                   className="w-28 h-28 rounded-full object-cover border-4 border-blue-200 shadow"
                 />
                 {uploading && (

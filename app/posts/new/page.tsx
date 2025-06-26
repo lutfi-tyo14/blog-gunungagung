@@ -2,6 +2,7 @@
 import { useState, ChangeEvent } from "react";
 import { useRouter } from "next/navigation";
 import { supabase } from "../../../lib/supabaseClient";
+import Image from "next/image";
 
 export default function NewPost() {
   const [title, setTitle] = useState("");
@@ -75,7 +76,7 @@ export default function NewPost() {
       <div className="absolute bottom-0 right-0 w-60 h-60 bg-blue-100 opacity-30 rounded-full blur-2xl -z-10" style={{bottom: '-80px', right: '-80px'}} />
       <div className="w-full max-w-md bg-white/90 rounded-xl shadow p-8">
         <h1 className="text-2xl font-bold mb-4 text-blue-700 flex items-center gap-2">
-          <img src="/mountain.svg" alt="Gunung" width={28} height={28} className="inline-block drop-shadow animate-bounce-slow" />
+          <Image src="/mountain.svg" alt="Gunung" width={28} height={28} className="inline-block drop-shadow animate-bounce-slow" />
           Buat Postingan Baru
         </h1>
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">
@@ -102,7 +103,15 @@ export default function NewPost() {
               onChange={handleImageChange}
               className="border p-2 rounded-lg"
             />
-            {imagePreview && <img src={imagePreview} alt="Preview" className="w-full max-h-60 object-contain rounded-lg border mt-2" />}
+            {imagePreview && (
+              <Image 
+                src={imagePreview} 
+                alt="Preview" 
+                width={600}
+                height={400}
+                className="w-full max-h-60 object-contain rounded-lg border mt-2" 
+              />
+            )}
           </label>
           {error && <p className="text-red-500">{error}</p>}
           <div className="flex gap-2">

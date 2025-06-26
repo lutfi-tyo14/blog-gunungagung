@@ -3,6 +3,7 @@ import Link from "next/link";
 import { supabase } from "../../lib/supabaseClient";
 import { useEffect, useState } from "react";
 import { useRouter, usePathname } from "next/navigation";
+import Image from "next/image";
 
 function isActive(path: string, current: string) {
   return path === current
@@ -64,9 +65,11 @@ export default function Navbar() {
           >
             <span className="hidden sm:block font-semibold text-blue-700 group-hover:underline transition">{profile?.username || user.email}</span>
             <span className="relative">
-              <img
+              <Image
                 src={profile?.avatar_url || "/file.svg"}
                 alt="Avatar"
+                width={40}
+                height={40}
                 className="w-10 h-10 rounded-full object-cover border-2 border-blue-300 shadow ring-2 ring-blue-200 group-hover:ring-blue-400 transition"
               />
               <span className="absolute bottom-0 right-0 w-3 h-3 bg-green-400 border-2 border-white rounded-full"></span>
