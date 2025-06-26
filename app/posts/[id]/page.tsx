@@ -29,6 +29,7 @@ interface CommentData {
 }
 
 type SupabaseComment = Omit<CommentData, 'profiles'> & { profiles: any };
+type SupabasePost = Omit<Post, 'profiles'> & { profiles: any };
 
 interface UserSession {
   id: string;

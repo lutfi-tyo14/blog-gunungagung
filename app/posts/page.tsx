@@ -38,6 +38,8 @@ interface UserSession {
   role?: string;
 }
 
+type SupabasePost = Omit<Post, 'profiles'> & { profiles: any };
+
 export default function PostsLanding() {
   const [loading, setLoading] = useState(true);
   const [user, setUser] = useState<UserSession | null>(null);
@@ -80,9 +82,9 @@ export default function PostsLanding() {
         `)
         .order("created_at", { ascending: false });
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      setPosts((postsData || []).map((p: any) => ({ 
-        ...p, 
-        profiles: Array.isArray(p.profiles) ? p.profiles[0] : p.profiles 
+      setPosts((postsData || []).map((p: SupabasePost) => ({
+        ...p,
+        profiles: Array.isArray(p.profiles) ? p.profiles[0] : p.profiles
       })));
       // Fetch comments for all posts
       if (postsData && postsData.length > 0) {
