@@ -27,7 +27,7 @@ export default function NewPost() {
     if (!session) return null;
     const fileExt = imageFile.name.split('.').pop();
     const fileName = `${session.user.id}_${Date.now()}.${fileExt}`;
-    const { data, error } = await supabase.storage
+    const { error } = await supabase.storage
       .from("post-images")
       .upload(fileName, imageFile, { upsert: true });
     if (error) {

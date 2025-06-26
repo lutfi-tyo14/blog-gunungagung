@@ -17,7 +17,6 @@ export default function ConfirmResetPassword() {
   // Extract parameters from URL
   const tokenHash = searchParams.get("token_hash");
   const type = searchParams.get("type");
-  const next = searchParams.get("next");
 
   useEffect(() => {
     const validateToken = async () => {
@@ -38,7 +37,7 @@ export default function ConfirmResetPassword() {
           setError("Token reset password tidak valid atau sudah kadaluarsa.");
         }
         setValidating(false);
-      } catch (err) {
+      } catch {
         setError("Terjadi kesalahan saat memvalidasi token.");
         setValidating(false);
       }
@@ -80,7 +79,7 @@ export default function ConfirmResetPassword() {
         // Redirect immediately to login page
         router.replace("/auth/login");
       }
-    } catch (err) {
+    } catch {
       setError("Terjadi kesalahan saat reset password.");
     } finally {
       setLoading(false);

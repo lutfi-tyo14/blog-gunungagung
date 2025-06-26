@@ -12,7 +12,7 @@ function isActive(path: string, current: string) {
 }
 
 export default function Navbar() {
-  const [user, setUser] = useState<any>(null);
+  const [user, setUser] = useState<{ id: string; email?: string; role?: string } | null>(null);
   const [profile, setProfile] = useState<{ username?: string; avatar_url?: string } | null>(null);
   const router = useRouter();
   const pathname = usePathname();

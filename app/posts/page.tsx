@@ -31,7 +31,7 @@ interface Comment {
 
 export default function PostsLanding() {
   const [loading, setLoading] = useState(true);
-  const [user, setUser] = useState<any>(null);
+  const [user, setUser] = useState<{ id: string; email?: string; role?: string } | null>(null);
   const [posts, setPosts] = useState<Post[]>([]);
   const [commentsMap, setCommentsMap] = useState<Record<string, Comment[]>>({});
   const [commentInputs, setCommentInputs] = useState<Record<string, string>>({});
@@ -70,7 +70,7 @@ export default function PostsLanding() {
           )
         `)
         .order("created_at", { ascending: false });
-      setPosts((postsData || []).map((p: any) => ({ 
+      setPosts((postsData || []).map((p: { id: string; title: string; content: string; image_url?: string; created_at: string; user_id: string; profiles: any }) => ({ 
         ...p, 
         profiles: Array.isArray(p.profiles) ? p.profiles[0] : p.profiles 
       })));
@@ -82,7 +82,7 @@ export default function PostsLanding() {
           .select("id, content, created_at, post_id, profiles:profiles(username,email,avatar_url)")
           .in("post_id", postIds);
         const map: Record<string, Comment[]> = {};
-        (allComments || []).forEach((c: any) => {
+        (allComments || []).forEach((c: { id: string; content: string; created_at: string; post_id: string; profiles: any }) => {
           if (!map[c.post_id]) map[c.post_id] = [];
           map[c.post_id].push(c);
         });

@@ -6,7 +6,7 @@ import Image from "next/image";
 
 export default function EditProfile() {
   const [loading, setLoading] = useState(true);
-  const [user, setUser] = useState<any>(null);
+  const [user, setUser] = useState<{ id: string; email?: string } | null>(null);
   const [username, setUsername] = useState("");
   const [avatarUrl, setAvatarUrl] = useState("");
   const [avatarFile, setAvatarFile] = useState<File | null>(null);
@@ -75,7 +75,7 @@ export default function EditProfile() {
       if (uploadedUrl) finalAvatarUrl = uploadedUrl;
       else return;
     }
-    const { error } = await supabase.from("profiles").update({ username, avatar_url: finalAvatarUrl }).eq("id", user.id);
+    const { error } = await supabase.from("profiles").update({ username, avatar_url: finalAvatarUrl }).eq("id", user?.id);
     if (error) setError(error.message);
     else {
       setSuccess("Profil berhasil diperbarui!");

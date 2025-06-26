@@ -8,7 +8,6 @@ export default function EditPost() {
   const params = useParams();
   const postId = params?.id as string;
   const [loading, setLoading] = useState(true);
-  const [user, setUser] = useState<any>(null);
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [imageUrl, setImageUrl] = useState("");
@@ -21,7 +20,6 @@ export default function EditPost() {
         router.replace("/");
         return;
       }
-      setUser(data.session.user);
       // Ambil data postingan
       const { data: post, error } = await supabase
         .from("posts")

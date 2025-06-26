@@ -52,7 +52,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: updateError.message }, { status: 500 });
     }
     return NextResponse.json({ message: 'Password berhasil direset untuk user tersebut.' });
-  } catch (err) {
+  } catch {
     return NextResponse.json({ error: 'Terjadi kesalahan server.' }, { status: 500 });
   }
 } 

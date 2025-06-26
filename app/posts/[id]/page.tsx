@@ -45,12 +45,31 @@ export default function PostDetail() {
       const { data: { session } } = await supabase.auth.getSession();
       setUser(session?.user || null);
       // Ambil postingan
-      const { data: post, error } = await supabase
+      const { data: post, error: postError } = await supabase
         .from("posts")
-        .select("id, title, content, image_url, created_at, profiles:profiles(username,email)")
+        .select(`
+          id, 
+          title, 
+          content, 
+          image_url, 
+          created_at, 
+          user_id,
+          profiles!posts_user_id_fkey (
+            email,
+            username,
+            avatar_url
+          )
+        `)
         .eq("id", postId)
         .single();
-      setPost(post ? { ...post, profiles: post.profiles?.[0] } : null);
+      
+      if (postError || !post) {
+        setError("Postingan tidak ditemukan.");
+        setLoading(false);
+        return;
+      }
+      
+      setPost({ ...post, profiles: Array.isArray(post.profiles) ? post.profiles[0] : post.profiles });
       // Ambil komentar
       const { data: comments } = await supabase
         .from("comments")

@@ -9,12 +9,10 @@ import type { Session } from "@supabase/supabase-js";
 export default function Home() {
   const router = useRouter();
   const [loading, setLoading] = useState(true);
-  const [session, setSession] = useState<Session | null>(null);
 
   useEffect(() => {
     const getSession = async () => {
       const { data } = await supabase.auth.getSession();
-      setSession(data.session);
       setLoading(false);
       if (data.session) {
         router.replace("/posts");
