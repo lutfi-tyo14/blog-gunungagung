@@ -28,6 +28,8 @@ interface CommentData {
   };
 }
 
+type SupabaseComment = Omit<CommentData, 'profiles'> & { profiles: any };
+
 export default function PostDetail() {
   const params = useParams();
   const router = useRouter();
@@ -79,7 +81,7 @@ export default function PostDetail() {
           profiles:profiles(username,email,avatar_url)
         `)
         .eq("post_id", postId);
-      setComments((comments || []).map((c: any) => ({
+      setComments((comments || []).map((c: SupabaseComment) => ({
         id: c.id,
         content: c.content,
         created_at: c.created_at,

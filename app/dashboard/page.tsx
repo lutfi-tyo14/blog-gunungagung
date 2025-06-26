@@ -11,15 +11,6 @@ interface Profile {
   role: string;
 }
 
-interface Post {
-  id: string;
-  title: string;
-  content: string;
-  created_at: string;
-  user_id: string;
-  profiles?: { username?: string; email?: string };
-}
-
 export default function Dashboard() {
   const [loading, setLoading] = useState(true);
   const [profiles, setProfiles] = useState<Profile[]>([]);
@@ -34,7 +25,7 @@ export default function Dashboard() {
         return;
       }
       // Ambil semua postingan
-      const { data: allPosts } = await supabase
+      await supabase
         .from("posts")
         .select("*")
         .order("created_at", { ascending: false });

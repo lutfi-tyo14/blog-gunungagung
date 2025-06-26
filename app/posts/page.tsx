@@ -30,6 +30,8 @@ interface CommentData {
   };
 }
 
+type SupabaseComment = Omit<CommentData, 'profiles'> & { profiles: any };
+
 export default function PostsLanding() {
   const [loading, setLoading] = useState(true);
   const [user, setUser] = useState<{ id: string; email?: string; role?: string } | null>(null);
@@ -84,7 +86,7 @@ export default function PostsLanding() {
           .select("id, content, created_at, post_id, profiles:profiles(username,email,avatar_url)")
           .in("post_id", postIds);
         const map: Record<string, CommentData[]> = {};
-        (allComments || []).forEach((c: any) => {
+        (allComments || []).forEach((c: SupabaseComment) => {
           const comment: CommentData = {
             id: c.id,
             content: c.content,

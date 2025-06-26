@@ -52,7 +52,7 @@ export default function EditProfile() {
     setUploading(true);
     const fileExt = avatarFile.name.split('.').pop();
     const fileName = `${user.id}_${Date.now()}.${fileExt}`;
-    const { data, error } = await supabase.storage
+    const { error } = await supabase.storage
       .from("avatars")
       .upload(fileName, avatarFile, { upsert: true });
     setUploading(false);
