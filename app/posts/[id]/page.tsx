@@ -88,7 +88,13 @@ export default function PostDetail() {
           profiles:profiles(username,email,avatar_url)
         `)
         .eq("post_id", postId);
-      setComments((comments || []).map((c: SupabaseComment) => ({
+      setComments((comments || []).map((c: {
+        id: string;
+        content: string;
+        created_at: string;
+        post_id: string;
+        profiles: any;
+      }) => ({
         id: c.id,
         content: c.content,
         created_at: c.created_at,
