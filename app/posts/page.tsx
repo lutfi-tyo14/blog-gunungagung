@@ -30,8 +30,6 @@ interface CommentData {
   };
 }
 
-type SupabaseComment = Omit<CommentData, 'profiles'> & { profiles: any };
-
 interface UserSession {
   id: string;
   email?: string;
@@ -89,7 +87,15 @@ export default function PostsLanding() {
         image_url?: string;
         created_at: string;
         user_id: string;
-        profiles: any;
+        profiles: {
+          email?: string;
+          username?: string;
+          avatar_url?: string;
+        } | {
+          email?: string;
+          username?: string;
+          avatar_url?: string;
+        }[];
       }) => ({
         ...p,
         profiles: Array.isArray(p.profiles) ? p.profiles[0] : p.profiles
@@ -107,7 +113,15 @@ export default function PostsLanding() {
           content: string;
           created_at: string;
           post_id: string;
-          profiles: any;
+          profiles: {
+            username?: string;
+            email?: string;
+            avatar_url?: string;
+          } | {
+            username?: string;
+            email?: string;
+            avatar_url?: string;
+          }[];
         }) => {
           const comment: CommentData = {
             id: c.id,

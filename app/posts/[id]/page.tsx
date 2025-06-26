@@ -93,7 +93,15 @@ export default function PostDetail() {
         content: string;
         created_at: string;
         post_id: string;
-        profiles: any;
+        profiles: {
+          username?: string;
+          email?: string;
+          avatar_url?: string;
+        } | {
+          username?: string;
+          email?: string;
+          avatar_url?: string;
+        }[];
       }) => ({
         id: c.id,
         content: c.content,
