@@ -16,10 +16,11 @@ interface Post {
   };
 }
 
-interface Comment {
+interface CommentData {
   id: string;
   content: string;
   created_at: string;
+  post_id: string;
   profiles?: {
     username?: string;
     email?: string;
@@ -33,7 +34,7 @@ export default function PostDetail() {
   const postId = params?.id as string;
   const [loading, setLoading] = useState(true);
   const [post, setPost] = useState<Post | null>(null);
-  const [comments, setComments] = useState<Comment[]>([]);
+  const [comments, setComments] = useState<CommentData[]>([]);
   const [user, setUser] = useState<any>(null);
   const [comment, setComment] = useState("");
   const [error, setError] = useState("");
@@ -71,7 +72,6 @@ export default function PostDetail() {
       
       setPost({ ...post, profiles: Array.isArray(post.profiles) ? post.profiles[0] : post.profiles });
       // Ambil komentar
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const { data: comments } = await supabase
         .from("comments")
         .select(`
@@ -79,7 +79,13 @@ export default function PostDetail() {
           profiles:profiles(username,email,avatar_url)
         `)
         .eq("post_id", postId);
-      setComments((comments || []).map((c: any) => ({ ...c, profiles: Array.isArray(c.profiles) ? c.profiles[0] : c.profiles })));
+      setComments((comments || []).map((c: any) => ({
+        id: c.id,
+        content: c.content,
+        created_at: c.created_at,
+        post_id: c.post_id,
+        profiles: Array.isArray(c.profiles) ? c.profiles[0] : c.profiles
+      }) as CommentData));
       setLoading(false);
     };
     fetchData();
@@ -109,7 +115,13 @@ export default function PostDetail() {
     setCommentLoading(false);
     if (error) setError(error.message);
     else {
-      setComments([...comments, { ...data, profiles: data.profiles?.[0] }]);
+      setComments([...comments, {
+        id: data.id,
+        content: data.content,
+        created_at: data.created_at,
+        post_id: postId,
+        profiles: Array.isArray(data.profiles) ? data.profiles[0] : data.profiles
+      } as CommentData]);
       setComment("");
     }
   };

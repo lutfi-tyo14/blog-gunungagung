@@ -18,10 +18,11 @@ interface Post {
   };
 }
 
-interface Comment {
+interface CommentData {
   id: string;
   content: string;
   created_at: string;
+  post_id: string;
   profiles?: {
     username?: string;
     email?: string;
@@ -33,7 +34,7 @@ export default function PostsLanding() {
   const [loading, setLoading] = useState(true);
   const [user, setUser] = useState<{ id: string; email?: string; role?: string } | null>(null);
   const [posts, setPosts] = useState<Post[]>([]);
-  const [commentsMap, setCommentsMap] = useState<Record<string, Comment[]>>({});
+  const [commentsMap, setCommentsMap] = useState<Record<string, CommentData[]>>({});
   const [commentInputs, setCommentInputs] = useState<Record<string, string>>({});
   const [commentLoading, setCommentLoading] = useState<Record<string, boolean>>({});
   const [errorMap, setErrorMap] = useState<Record<string, string>>({});
@@ -82,11 +83,17 @@ export default function PostsLanding() {
           .from("comments")
           .select("id, content, created_at, post_id, profiles:profiles(username,email,avatar_url)")
           .in("post_id", postIds);
-        const map: Record<string, Comment[]> = {};
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const map: Record<string, CommentData[]> = {};
         (allComments || []).forEach((c: any) => {
+          const comment: CommentData = {
+            id: c.id,
+            content: c.content,
+            created_at: c.created_at,
+            post_id: c.post_id,
+            profiles: Array.isArray(c.profiles) ? c.profiles[0] : c.profiles
+          };
           if (!map[c.post_id]) map[c.post_id] = [];
-          map[c.post_id].push(c);
+          map[c.post_id].push(comment);
         });
         setCommentsMap(map);
       }
@@ -129,7 +136,13 @@ export default function PostsLanding() {
         ...prev,
         [postId]: [
           ...(prev[postId] || []),
-          data ? { ...data, profiles: Array.isArray(data.profiles) ? data.profiles[0] : data.profiles } : data
+          data ? {
+            id: data.id,
+            content: data.content,
+            created_at: data.created_at,
+            post_id: postId,
+            profiles: Array.isArray(data.profiles) ? data.profiles[0] : data.profiles
+          } as CommentData : data
         ],
       }));
       setCommentInputs((prev) => ({ ...prev, [postId]: "" }));

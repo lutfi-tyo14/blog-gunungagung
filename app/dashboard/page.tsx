@@ -38,8 +38,6 @@ export default function Dashboard() {
         .from("posts")
         .select("*")
         .order("created_at", { ascending: false });
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const posts: Post[] = (allPosts || []).map((p: any) => ({ ...p, profiles: Array.isArray(p.profiles) ? p.profiles[0] : p.profiles }));
       // Ambil semua user
       const { data: profilesData } = await supabase
         .from("profiles")
