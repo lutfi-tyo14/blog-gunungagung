@@ -30,6 +30,12 @@ interface CommentData {
 
 type SupabaseComment = Omit<CommentData, 'profiles'> & { profiles: any };
 
+interface UserSession {
+  id: string;
+  email?: string;
+  role?: string;
+}
+
 export default function PostDetail() {
   const params = useParams();
   const router = useRouter();
@@ -37,7 +43,7 @@ export default function PostDetail() {
   const [loading, setLoading] = useState(true);
   const [post, setPost] = useState<Post | null>(null);
   const [comments, setComments] = useState<CommentData[]>([]);
-  const [user, setUser] = useState<any>(null);
+  const [user, setUser] = useState<UserSession | null>(null);
   const [comment, setComment] = useState("");
   const [error, setError] = useState("");
   const [commentLoading, setCommentLoading] = useState(false);
@@ -46,7 +52,7 @@ export default function PostDetail() {
     const fetchData = async () => {
       // Cek session
       const { data: { session } } = await supabase.auth.getSession();
-      setUser(session?.user || null);
+      setUser(session?.user ? { id: session.user.id, email: session.user.email } : null);
       // Ambil postingan
       const { data: post, error: postError } = await supabase
         .from("posts")

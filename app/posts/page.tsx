@@ -32,9 +32,15 @@ interface CommentData {
 
 type SupabaseComment = Omit<CommentData, 'profiles'> & { profiles: any };
 
+interface UserSession {
+  id: string;
+  email?: string;
+  role?: string;
+}
+
 export default function PostsLanding() {
   const [loading, setLoading] = useState(true);
-  const [user, setUser] = useState<{ id: string; email?: string; role?: string } | null>(null);
+  const [user, setUser] = useState<UserSession | null>(null);
   const [posts, setPosts] = useState<Post[]>([]);
   const [commentsMap, setCommentsMap] = useState<Record<string, CommentData[]>>({});
   const [commentInputs, setCommentInputs] = useState<Record<string, string>>({});
@@ -55,7 +61,7 @@ export default function PostsLanding() {
         .select("role")
         .eq("id", data.session.user.id)
         .single();
-      setUser({ ...data.session.user, role: profile?.role || "user" });
+      setUser({ id: data.session.user.id, email: data.session.user.email, role: profile?.role || "user" });
       // Fetch posts with author info
       const { data: postsData } = await supabase
         .from("posts")
