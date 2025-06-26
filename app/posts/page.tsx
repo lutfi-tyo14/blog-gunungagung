@@ -70,7 +70,8 @@ export default function PostsLanding() {
           )
         `)
         .order("created_at", { ascending: false });
-      setPosts((postsData || []).map((p: { id: string; title: string; content: string; image_url?: string; created_at: string; user_id: string; profiles: any }) => ({ 
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      setPosts((postsData || []).map((p: any) => ({ 
         ...p, 
         profiles: Array.isArray(p.profiles) ? p.profiles[0] : p.profiles 
       })));
@@ -82,7 +83,8 @@ export default function PostsLanding() {
           .select("id, content, created_at, post_id, profiles:profiles(username,email,avatar_url)")
           .in("post_id", postIds);
         const map: Record<string, Comment[]> = {};
-        (allComments || []).forEach((c: { id: string; content: string; created_at: string; post_id: string; profiles: any }) => {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        (allComments || []).forEach((c: any) => {
           if (!map[c.post_id]) map[c.post_id] = [];
           map[c.post_id].push(c);
         });

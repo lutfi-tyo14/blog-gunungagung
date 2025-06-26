@@ -24,8 +24,6 @@ export default function Dashboard() {
   const [loading, setLoading] = useState(true);
   const [profiles, setProfiles] = useState<Profile[]>([]);
   const [roleUpdate, setRoleUpdate] = useState<Record<string, string>>({});
-  const [error, setError] = useState("");
-  const [success, setSuccess] = useState("");
   const router = useRouter();
 
   useEffect(() => {
@@ -38,9 +36,10 @@ export default function Dashboard() {
       // Ambil semua postingan
       const { data: allPosts } = await supabase
         .from("posts")
-        .select("id, title, content, created_at, user_id, profiles:profiles(username,email)")
+        .select("*")
         .order("created_at", { ascending: false });
-      const mappedPosts: Post[] = (allPosts || []).map((p: any) => ({ ...p, profiles: Array.isArray(p.profiles) ? p.profiles[0] : p.profiles }));
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const posts: Post[] = (allPosts || []).map((p: any) => ({ ...p, profiles: Array.isArray(p.profiles) ? p.profiles[0] : p.profiles }));
       // Ambil semua user
       const { data: profilesData } = await supabase
         .from("profiles")
@@ -57,19 +56,15 @@ export default function Dashboard() {
   };
 
   const handleUpdateRole = async (userId: string) => {
-    setError(""); setSuccess("");
     const newRole = roleUpdate[userId];
     if (!newRole) return;
     const { error } = await supabase.from("profiles").update({ role: newRole }).eq("id", userId);
-    if (error) setError(error.message);
-    else setSuccess("Role berhasil diupdate!");
+    if (error) console.error("Gagal mengupdate role:", error.message);
   };
 
   const handleResetPassword = async (email: string) => {
-    setError(""); setSuccess("");
     const { error } = await supabase.auth.resetPasswordForEmail(email);
-    if (error) setError("Gagal mengirim email reset password: " + error.message);
-    else setSuccess("Email reset password telah dikirim ke " + email);
+    if (error) console.error("Gagal mengirim email reset password:", error.message);
   };
 
   if (loading) return <div className="flex justify-center items-center min-h-screen">Loading...</div>;

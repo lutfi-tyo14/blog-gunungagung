@@ -71,12 +71,15 @@ export default function PostDetail() {
       
       setPost({ ...post, profiles: Array.isArray(post.profiles) ? post.profiles[0] : post.profiles });
       // Ambil komentar
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const { data: comments } = await supabase
         .from("comments")
-        .select("id, content, created_at, profiles:profiles(username,email,avatar_url)")
-        .eq("post_id", postId)
-        .order("created_at", { ascending: true });
-      setComments((comments || []).map(c => ({ ...c, profiles: c.profiles?.[0] })));
+        .select(`
+          id, content, created_at, post_id,
+          profiles:profiles(username,email,avatar_url)
+        `)
+        .eq("post_id", postId);
+      setComments((comments || []).map((c: any) => ({ ...c, profiles: Array.isArray(c.profiles) ? c.profiles[0] : c.profiles })));
       setLoading(false);
     };
     fetchData();

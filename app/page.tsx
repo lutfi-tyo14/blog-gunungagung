@@ -4,7 +4,6 @@ import { useRouter } from "next/navigation";
 import { supabase } from "../lib/supabaseClient";
 import { useState } from "react";
 import Image from "next/image";
-import type { Session } from "@supabase/supabase-js";
 
 export default function Home() {
   const router = useRouter();

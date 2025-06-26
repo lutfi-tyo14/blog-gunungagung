@@ -5,6 +5,17 @@ import { useEffect, useState } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import Image from "next/image";
 
+interface UserProfile {
+  username?: string;
+  avatar_url?: string;
+}
+
+interface UserSession {
+  id: string;
+  email?: string;
+  role?: string;
+}
+
 function isActive(path: string, current: string) {
   return path === current
     ? "text-blue-700 font-bold underline underline-offset-8"
@@ -12,16 +23,17 @@ function isActive(path: string, current: string) {
 }
 
 export default function Navbar() {
-  const [user, setUser] = useState<{ id: string; email?: string; role?: string } | null>(null);
-  const [profile, setProfile] = useState<{ username?: string; avatar_url?: string } | null>(null);
+  const [user, setUser] = useState<UserSession | null>(null);
+  const [profile, setProfile] = useState<UserProfile | null>(null);
   const router = useRouter();
   const pathname = usePathname();
 
   useEffect(() => {
-    let authListener: any;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    let authListener: any = null;
     const getSessionAndProfile = async () => {
       const { data: { session } } = await supabase.auth.getSession();
-      setUser(session?.user || null);
+      setUser(session?.user ? { id: session.user.id, email: session.user.email } : null);
       if (session?.user) {
         const { data: profile } = await supabase
           .from("profiles")
