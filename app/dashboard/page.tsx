@@ -51,9 +51,10 @@ export default function Dashboard() {
         .from("posts")
         .select("id, title, content, created_at, user_id, profiles:profiles(username,email)")
         .order("created_at", { ascending: false });
-      setPosts(allPosts || []);
+      const mappedPosts: Post[] = (allPosts || []).map((p: any) => ({ ...p, profiles: Array.isArray(p.profiles) ? p.profiles[0] : p.profiles }));
+      setPosts(mappedPosts);
       // Ambil postingan sendiri
-      setMyPosts((allPosts || []).filter((p: Post) => p.user_id === session.user.id));
+      setMyPosts(mappedPosts.filter((p) => p.user_id === session.user.id));
       // Jika super admin, ambil semua user
       if (profile?.role === "super_admin") {
         const { data: allProfiles } = await supabase
@@ -79,13 +80,26 @@ export default function Dashboard() {
     else setSuccess("Role berhasil diupdate!");
   };
 
+  const handleResetPassword = async (email: string) => {
+    setError(""); setSuccess("");
+    const { error } = await supabase.auth.resetPasswordForEmail(email);
+    if (error) setError("Gagal mengirim email reset password: " + error.message);
+    else setSuccess("Email reset password telah dikirim ke " + email);
+  };
+
   if (loading) return <div className="flex justify-center items-center min-h-screen">Loading...</div>;
   if (!profile) return null;
 
   return (
-    <div className="flex flex-col items-center min-h-screen p-8 bg-gradient-to-b from-blue-100 to-white">
-      <div className="w-full max-w-3xl bg-white rounded-xl shadow-lg p-8 flex flex-col gap-8">
-        <h1 className="text-3xl font-bold text-blue-700 mb-2">Dashboard ({profile.role.replace('_', ' ').toUpperCase()})</h1>
+    <div className="flex flex-col items-center min-h-screen p-8 bg-gradient-to-b from-green-200 via-blue-100 to-white relative overflow-hidden">
+      {/* Ornamen awan */}
+      <div className="absolute top-0 left-0 w-40 h-40 bg-white opacity-40 rounded-full blur-2xl -z-10" style={{top: '-60px', left: '-60px'}} />
+      <div className="absolute bottom-0 right-0 w-60 h-60 bg-blue-100 opacity-30 rounded-full blur-2xl -z-10" style={{bottom: '-80px', right: '-80px'}} />
+      <div className="w-full max-w-3xl bg-white/90 rounded-xl shadow-lg p-8 flex flex-col gap-8">
+        <h1 className="text-3xl font-bold text-blue-700 mb-2 flex items-center gap-2">
+          <img src="/mountain.svg" alt="Gunung" width={32} height={32} className="inline-block drop-shadow animate-bounce-slow" />
+          Dashboard ({profile.role.replace('_', ' ').toUpperCase()})
+        </h1>
         {/* User & Admin */}
         {(profile.role === "user" || profile.role === "admin") && (
           <>
@@ -102,8 +116,26 @@ export default function Dashboard() {
               {myPosts.length === 0 && <div className="text-gray-400">Belum ada postingan.</div>}
               <ul className="list-disc ml-6">
                 {myPosts.map((p) => (
-                  <li key={p.id} className="mb-1">
+                  <li key={p.id} className="mb-1 flex items-center gap-2">
                     <span className="font-semibold">{p.title}</span> <span className="text-xs text-gray-500">({new Date(p.created_at).toLocaleString()})</span>
+                    <button
+                      className="ml-2 bg-yellow-400 text-white px-2 py-1 rounded hover:bg-yellow-500 text-xs"
+                      onClick={() => router.push(`/posts/${p.id}/edit`)}
+                    >
+                      Edit
+                    </button>
+                    <button
+                      className="ml-2 bg-red-600 text-white px-2 py-1 rounded hover:bg-red-700 text-xs"
+                      onClick={async () => {
+                        if (confirm('Yakin ingin menghapus postingan ini?')) {
+                          const { error } = await supabase.from('posts').delete().eq('id', p.id);
+                          if (!error) setMyPosts(myPosts.filter(post => post.id !== p.id));
+                          if (!error) setPosts(posts.filter(post => post.id !== p.id));
+                        }
+                      }}
+                    >
+                      Delete
+                    </button>
                   </li>
                 ))}
               </ul>
@@ -119,12 +151,21 @@ export default function Dashboard() {
               {posts.map((p) => (
                 <li key={p.id} className="mb-1 flex items-center gap-2">
                   <span className="font-semibold">{p.title}</span> oleh {p.profiles?.username || p.profiles?.email || 'Anonim'} <span className="text-xs text-gray-500">({new Date(p.created_at).toLocaleString()})</span>
+                  {p.user_id === profile.id && (
+                    <button
+                      className="ml-2 bg-yellow-400 text-white px-2 py-1 rounded hover:bg-yellow-500 text-xs"
+                      onClick={() => router.push(`/posts/${p.id}/edit`)}
+                    >
+                      Edit
+                    </button>
+                  )}
                   <button
                     className="ml-2 bg-red-600 text-white px-2 py-1 rounded hover:bg-red-700 text-xs"
                     onClick={async () => {
                       if (confirm('Yakin ingin menghapus postingan ini?')) {
                         const { error } = await supabase.from('posts').delete().eq('id', p.id);
                         if (!error) setPosts(posts.filter(post => post.id !== p.id));
+                        if (!error) setMyPosts(myPosts.filter(post => post.id !== p.id));
                       }
                     }}
                   >
@@ -148,6 +189,7 @@ export default function Dashboard() {
                   <th className="border px-2 py-1">Username</th>
                   <th className="border px-2 py-1">Role</th>
                   <th className="border px-2 py-1">Aksi</th>
+                  <th className="border px-2 py-1">Reset Password</th>
                 </tr>
               </thead>
               <tbody>
@@ -172,6 +214,13 @@ export default function Dashboard() {
                         onClick={() => handleUpdateRole(u.id)}
                         disabled={u.id === profile.id}
                       >Update</button>
+                    </td>
+                    <td className="border px-2 py-1 text-center">
+                      <button
+                        className="bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600 text-xs"
+                        onClick={() => handleResetPassword(u.email)}
+                        disabled={u.id === profile.id}
+                      >Reset</button>
                     </td>
                   </tr>
                 ))}

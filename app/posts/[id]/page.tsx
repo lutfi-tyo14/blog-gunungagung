@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
-import { supabase } from "../../../../lib/supabaseClient";
+import { supabase } from "../../../lib/supabaseClient";
 
 interface Post {
   id: string;
@@ -49,14 +49,14 @@ export default function PostDetail() {
         .select("id, title, content, image_url, created_at, profiles:profiles(username,email)")
         .eq("id", postId)
         .single();
-      setPost(post);
+      setPost(post ? { ...post, profiles: post.profiles?.[0] } : null);
       // Ambil komentar
       const { data: comments } = await supabase
         .from("comments")
         .select("id, content, created_at, profiles:profiles(username,email,avatar_url)")
         .eq("post_id", postId)
         .order("created_at", { ascending: true });
-      setComments(comments || []);
+      setComments((comments || []).map(c => ({ ...c, profiles: c.profiles?.[0] })));
       setLoading(false);
     };
     fetchData();
@@ -86,7 +86,7 @@ export default function PostDetail() {
     setCommentLoading(false);
     if (error) setError(error.message);
     else {
-      setComments([...comments, data]);
+      setComments([...comments, { ...data, profiles: data.profiles?.[0] }]);
       setComment("");
     }
   };

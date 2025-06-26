@@ -1,36 +1,140 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Gunung Agung Info Platform
 
-## Getting Started
+Aplikasi web komunitas untuk berbagi, berdiskusi, dan mendapatkan informasi seputar Gunung Agung. Dibangun dengan Next.js, TypeScript, dan Supabase.
 
-First, run the development server:
+---
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## ✨ Fitur Utama
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+- **Autentikasi**: Login & register menggunakan email/password (Supabase Auth)
+- **Beranda**: Lihat daftar postingan terbaru dari komunitas
+- **Buat Postingan**: Tulis postingan baru dengan gambar opsional
+- **Komentar**: Diskusi di setiap postingan
+- **Dashboard**: Lihat profil, postingan sendiri, dan (untuk admin) kelola user & postingan
+- **Edit Profil**: Ubah username dan foto profil
+- **Desain Konsisten**: UI modern, responsif, dan konsisten di seluruh halaman
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+---
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## 🗺️ Alur Aplikasi
 
-## Learn More
+1. **Landing Page**: Pengguna baru diarahkan ke halaman utama dengan tombol Login & Register.
+2. **Register/Login**: Pengguna membuat akun atau login. Setelah login, diarahkan ke halaman Beranda.
+3. **Beranda** (`/posts`):
+   - Melihat daftar postingan komunitas
+   - Bisa menulis komentar di setiap postingan
+   - Tombol "Buat Postingan" untuk membuat postingan baru
+4. **Buat Postingan** (`/posts/new`):
+   - Form untuk membuat postingan baru (judul, isi, gambar opsional)
+5. **Dashboard** (`/dashboard`):
+   - Lihat profil, daftar postingan sendiri
+   - Admin/super admin bisa melihat & mengelola semua postingan dan user
+6. **Profile** (`/profile`):
+   - Edit username dan foto profil
+   - Logout
 
-To learn more about Next.js, take a look at the following resources:
+---
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## 🔒 Autentikasi & Hak Akses
+- Hanya user terautentikasi yang bisa membuat postingan, komentar, dan mengakses dashboard/profile.
+- Admin & super admin memiliki akses tambahan untuk mengelola postingan/user.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+---
 
-## Deploy on Vercel
+## ⚙️ Teknologi
+- **Next.js** (App Router)
+- **TypeScript**
+- **Supabase** (Auth, Database, Storage)
+- **Tailwind CSS** (utility-first styling)
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+---
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## 🚀 Cara Instalasi & Menjalankan
+
+1. **Clone repo**
+   ```bash
+   git clone <repo-url>
+   cd uas-pbw
+   ```
+2. **Install dependencies**
+   ```bash
+   npm install
+   ```
+3. **Konfigurasi Supabase**
+   - Buat project di [supabase.com](https://supabase.com)
+   - Salin `SUPABASE_URL` dan `SUPABASE_ANON_KEY` ke file `.env.local`:
+     ```env
+     NEXT_PUBLIC_SUPABASE_URL=xxx
+     NEXT_PUBLIC_SUPABASE_ANON_KEY=xxx
+     ```
+   - Pastikan tabel `posts`, `comments`, dan `profiles` sudah sesuai skema
+4. **Jalankan aplikasi**
+   ```bash
+   npm run dev
+   ```
+   Buka [http://localhost:3000](http://localhost:3000)
+
+---
+
+## 📁 Struktur Halaman
+- `/` : Landing page (welcome, login, register)
+- `/auth/login` : Login
+- `/auth/register` : Register
+- `/posts` : Beranda (daftar postingan)
+- `/posts/new` : Buat postingan baru
+- `/posts/[id]` : Detail postingan & komentar
+- `/dashboard` : Dashboard user/admin
+- `/profile` : Edit profil & logout
+
+---
+
+## 🖼️ Catatan Desain
+- Semua halaman menggunakan ornamen awan, ikon gunung, dan warna gradasi hijau-biru untuk konsistensi.
+- Navbar menampilkan halaman aktif dengan bold & underline.
+
+---
+
+## 🟦 Penggunaan TypeScript
+
+Aplikasi ini menggunakan TypeScript pada seluruh file utama, terutama pada file dengan ekstensi `.tsx` dan `.ts`. Berikut beberapa contoh file TypeScript di project ini:
+
+- `app/page.tsx` — Landing page (TypeScript + JSX/React)
+- `app/auth/login/page.tsx` — Halaman login (TypeScript + JSX/React)
+- `app/auth/register/page.tsx` — Halaman register (TypeScript + JSX/React)
+- `app/posts/page.tsx` — Beranda/daftar postingan (TypeScript + JSX/React)
+- `app/posts/new/page.tsx` — Form buat postingan (TypeScript + JSX/React)
+- `app/posts/[id]/page.tsx` — Detail postingan (TypeScript + JSX/React)
+- `app/posts/[id]/edit/page.tsx` — Edit postingan (TypeScript + JSX/React)
+- `app/dashboard/page.tsx` — Dashboard user/admin (TypeScript + JSX/React)
+- `app/profile/page.tsx` — Halaman profil (TypeScript + JSX/React)
+- `app/components/Navbar.tsx` — Komponen navigasi (TypeScript + JSX/React)
+- `lib/supabaseClient.ts` — Inisialisasi Supabase client (TypeScript)
+- `tsconfig.json` — Konfigurasi TypeScript untuk seluruh project
+
+**Ciri-ciri file TypeScript:**
+- Ekstensi `.ts` (untuk modul/helper) atau `.tsx` (untuk file React/JSX)
+- Menggunakan tipe data eksplisit, misal: `const [user, setUser] = useState<User | null>(null);`
+- Bisa mendefinisikan interface/type, misal:
+  ```ts
+  interface Post {
+    id: string;
+    title: string;
+    ...
+  }
+  ```
+- Lebih aman dari bug karena pengecekan tipe saat development
+
+**Manfaat TypeScript:**
+- Membantu mencegah bug tipe data
+- Autocomplete & dokumentasi lebih baik di editor
+- Kode lebih mudah dipelihara dan dikembangkan
+
+---
+
+## 📢 Kontribusi
+Pull request & issue sangat diterima! Silakan fork dan kembangkan sesuai kebutuhan komunitas.
+
+---
+
+## Lisensi
+MIT

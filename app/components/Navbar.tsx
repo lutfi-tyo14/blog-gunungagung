@@ -2,14 +2,20 @@
 import Link from "next/link";
 import { supabase } from "../../lib/supabaseClient";
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
+
+function isActive(path: string, current: string) {
+  return path === current
+    ? "text-blue-700 font-bold underline underline-offset-8"
+    : "text-gray-700 font-semibold hover:underline hover:underline-offset-8";
+}
 
 export default function Navbar() {
   const [user, setUser] = useState<any>(null);
   const [profile, setProfile] = useState<{ username?: string; avatar_url?: string } | null>(null);
   const router = useRouter();
+  const pathname = usePathname();
 
-  // Ambil session dan profile user setiap kali session berubah
   useEffect(() => {
     let authListener: any;
     const getSessionAndProfile = async () => {
@@ -38,35 +44,39 @@ export default function Navbar() {
   }, [router]);
 
   return (
-    <nav className="w-full bg-white shadow flex items-center px-4 py-2 gap-4 sticky top-0 z-10">
-      <Link href="/posts" className="font-bold text-blue-700 text-lg">Gunung Agung</Link>
-      <div className="flex-1 flex justify-center gap-6">
+    <nav className="w-full bg-white/80 backdrop-blur border-b border-blue-100 shadow-sm flex items-center px-6 py-3 gap-4 sticky top-0 z-20 font-sans">
+      <Link href="/posts" className="font-extrabold text-2xl text-blue-700 tracking-tight mr-6">Gunung Agung</Link>
+      <div className="flex-1 flex justify-center gap-8">
         {user && (
           <>
-            <Link href="/posts" className="hover:underline">Beranda</Link>
-            <Link href="/posts/new" className="hover:underline">Buat Postingan</Link>
-            <Link href="/dashboard" className="hover:underline">Dashboard</Link>
+            <Link href="/posts" className={`transition ${isActive("/posts", pathname)}`}>Beranda</Link>
+            <Link href="/posts/new" className={`transition ${isActive("/posts/new", pathname)}`}>Buat Postingan</Link>
+            <Link href="/dashboard" className={`transition ${isActive("/dashboard", pathname)}`}>Dashboard</Link>
           </>
         )}
       </div>
       {user ? (
         <div className="flex items-center gap-2">
           <button
-            className="flex items-center gap-2 focus:outline-none"
+            className="flex items-center gap-2 focus:outline-none group"
             onClick={() => router.push("/profile")}
             aria-label="Profile"
           >
-            <img
-              src={profile?.avatar_url || "/file.svg"}
-              alt="Avatar"
-              className="w-9 h-9 rounded-full object-cover border border-blue-200 bg-gray-100"
-            />
+            <span className="hidden sm:block font-semibold text-blue-700 group-hover:underline transition">{profile?.username || user.email}</span>
+            <span className="relative">
+              <img
+                src={profile?.avatar_url || "/file.svg"}
+                alt="Avatar"
+                className="w-10 h-10 rounded-full object-cover border-2 border-blue-300 shadow ring-2 ring-blue-200 group-hover:ring-blue-400 transition"
+              />
+              <span className="absolute bottom-0 right-0 w-3 h-3 bg-green-400 border-2 border-white rounded-full"></span>
+            </span>
           </button>
         </div>
       ) : (
         <div className="ml-auto flex gap-2">
-          <Link href="/auth/login" className="bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700">Login</Link>
-          <Link href="/auth/register" className="bg-gray-200 text-blue-700 px-3 py-1 rounded hover:bg-gray-300">Register</Link>
+          <Link href="/auth/login" className="bg-blue-600 text-white px-4 py-1.5 rounded-lg hover:bg-blue-700 transition font-semibold">Login</Link>
+          <Link href="/auth/register" className="bg-gray-100 text-blue-700 px-4 py-1.5 rounded-lg hover:bg-blue-200 transition font-semibold">Register</Link>
         </div>
       )}
     </nav>

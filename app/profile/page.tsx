@@ -85,8 +85,11 @@ export default function EditProfile() {
   if (loading) return <div className="flex justify-center items-center min-h-screen">Loading...</div>;
 
   return (
-    <div className="flex flex-col items-center min-h-screen p-8 bg-gradient-to-b from-blue-100 to-white">
-      <div className="w-full max-w-md bg-white rounded-xl shadow-lg p-8 flex flex-col items-center gap-6">
+    <div className="flex flex-col items-center min-h-screen p-8 bg-gradient-to-b from-green-200 via-blue-100 to-white relative overflow-hidden">
+      {/* Ornamen awan */}
+      <div className="absolute top-0 left-0 w-40 h-40 bg-white opacity-40 rounded-full blur-2xl -z-10" style={{top: '-60px', left: '-60px'}} />
+      <div className="absolute bottom-0 right-0 w-60 h-60 bg-blue-100 opacity-30 rounded-full blur-2xl -z-10" style={{bottom: '-80px', right: '-80px'}} />
+      <div className="w-full max-w-md bg-white/90 rounded-xl shadow-lg p-8 flex flex-col items-center gap-6">
         {/* Ringkasan Profile */}
         {!showEdit && (
           <>
