@@ -2,13 +2,21 @@ import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
 
 // Use Supabase service role key for admin actions
-const supabaseAdmin = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
-);
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+
+// Only create admin client if both environment variables are available
+const supabaseAdmin = supabaseUrl && supabaseServiceKey 
+  ? createClient(supabaseUrl, supabaseServiceKey)
+  : null;
 
 export async function POST(req: NextRequest) {
   try {
+    // Check if admin client is available
+    if (!supabaseAdmin) {
+      return NextResponse.json({ error: 'Server configuration error.' }, { status: 500 });
+    }
+
     const { email, newPassword } = await req.json();
     if (!email || !newPassword) {
       return NextResponse.json({ error: 'Email dan password baru wajib diisi.' }, { status: 400 });

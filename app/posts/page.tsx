@@ -77,7 +77,6 @@ export default function PostsLanding() {
           )
         `)
         .order("created_at", { ascending: false });
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       setPosts((postsData || []).map((p: {
         id: string;
         title: string;

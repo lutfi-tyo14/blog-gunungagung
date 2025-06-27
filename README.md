@@ -138,3 +138,54 @@ Pull request & issue sangat diterima! Silakan fork dan kembangkan sesuai kebutuh
 
 ## Lisensi
 MIT
+
+## Environment Variables
+
+For local development, create a `.env.local` file with the following variables:
+
+```env
+NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
+SUPABASE_SERVICE_ROLE_KEY=your_supabase_service_role_key
+```
+
+For Vercel deployment, add these environment variables in your Vercel project settings:
+
+- `NEXT_PUBLIC_SUPABASE_URL`: Your Supabase project URL
+- `NEXT_PUBLIC_SUPABASE_ANON_KEY`: Your Supabase anonymous key
+- `SUPABASE_SERVICE_ROLE_KEY`: Your Supabase service role key (for admin operations)
+
+## Getting Started
+
+1. Install dependencies:
+```bash
+npm install
+```
+
+2. Set up environment variables (see above)
+
+3. Run the development server:
+```bash
+npm run dev
+```
+
+4. Open [http://localhost:3000](http://localhost:3000) in your browser.
+
+## Features
+
+- User authentication
+- Blog post creation and management
+- Comments system
+- Image upload support
+- Role-based access control (admin, super admin)
+- Responsive design
+
+## Build
+
+```bash
+npm run build
+```
+
+## Deployment
+
+The application is configured for Vercel deployment. Make sure to set all required environment variables in your Vercel project settings.
