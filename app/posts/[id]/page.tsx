@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { supabase } from "../../../lib/supabaseClient";
 import Image from "next/image";
@@ -34,7 +34,7 @@ interface UserSession {
   role?: string;
 }
 
-export default function PostDetail() {
+function PostDetailContent() {
   const params = useParams();
   const router = useRouter();
   const postId = params?.id as string;
@@ -211,5 +211,20 @@ export default function PostDetail() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function PostDetail() {
+  return (
+    <Suspense fallback={
+      <div className="flex justify-center items-center min-h-screen">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+          <p className="text-gray-600">Memuat...</p>
+        </div>
+      </div>
+    }>
+      <PostDetailContent />
+    </Suspense>
   );
 } 
